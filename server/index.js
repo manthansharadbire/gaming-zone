@@ -22,6 +22,22 @@ app.get("/games", (req,res)=>{
     });
 });
 
+app.post("/games", (req,res)=>{
+    const {title, year , genre , thumbnail} = req.body;
+
+    const newGames = {
+        title, year , genre , thumbnail
+    }
+
+    GAMES.push(newGames)
+    
+    return res.status(201).json({
+        success:true,
+        data:GAMES,
+        message:"Game created successfully"
+    })
+})
+
 const PORT = 5002;
 
 app.listen(PORT, ()=>{
