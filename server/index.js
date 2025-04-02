@@ -3,6 +3,7 @@ import cors from 'cors';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 dotenv.config();
+import Game from './models/Game.js';
 
 
 const app = express();
@@ -16,32 +17,34 @@ const connectDB = async () => {
         console.log("MongoDB connected successfully")
     }
 }
-const GAMES = [];
 
 app.get("/health", (req, res) => {
     res.status(200).json({ message: "Server is Healthy" })
 });
 
-app.get("/games", (req, res) => {
+app.get("/games", async (req, res) => {
+
+    const getGames = await Game.find();
+
     return res.status(200).json({
         success: true,
-        data: GAMES,
+        data: getGames,
         meassage: "Games fetched successfully"
     });
 });
 
-app.post("/games", (req, res) => {
+app.post("/games", async (req, res) => {
     const { title, year, genre, thumbnail } = req.body;
 
-    const newGames = {
-        title, year, genre, thumbnail
-    }
+    const newGame = new Game({
+        title, year, genre, thumbnail 
+    })
 
-    GAMES.push(newGames)
+    const savedGame = await newGame.save();
 
     return res.status(201).json({
         success: true,
-        data: newGames,
+        data: savedGame,
         message: "Game created successfully"
     })
 })
